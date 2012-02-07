@@ -1291,52 +1291,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.TABLET_UI, 1);
         }
 
-<<<<<<< HEAD
+
       mHasNavigationBar = !mHasSystemNavBar;
      
-=======
-        if (!mHasSystemNavBar) {
-            final boolean showByDefault = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
-            mHasNavigationBar = Settings.System.getBoolean(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
 
-            /*
-             * at first boot up, we need to make sure navbar gets created
-             * (or obey framework setting). 
-             * this should quickly get over-ridden by the settings observer
-             * if it was disabled by the user.
-            */
-            if (mNavBarFirstBootFlag) {
-                mNavBarFirstBootFlag = false;
-            } else {
-                mHasNavigationBar = mHasNavigationBar &&
-                        Settings.System.getBoolean(mContext.getContentResolver(),
-                                Settings.System.NAVIGATION_BAR_SHOW_NOW, mHasNavigationBar);
-            }
-        } else {
-            // Allow a system property to override this. Used by the emulator.
-            // See also hasNavigationBar().
-            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
-            if (!"".equals(navBarOverride)) {
-                if (navBarOverride.equals("1"))
-                    mHasNavigationBar = false;
-                else if (navBarOverride.equals("0"))
-                    mHasNavigationBar = true;
-            }
-        }
-
-        if (!mHasNavigationBar) {
-            mNavigationBarWidthForRotation[mPortraitRotation] =
-                    mNavigationBarWidthForRotation[mUpsideDownRotation] =
-                    mNavigationBarWidthForRotation[mLandscapeRotation] =
-                    mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
-            mNavigationBarHeightForRotation[mPortraitRotation] =
-                    mNavigationBarHeightForRotation[mUpsideDownRotation] =
-                    mNavigationBarHeightForRotation[mLandscapeRotation] =
-                    mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
-        }
->>>>>>> cna/jellybean
 
         if (mHasSystemNavBar) {
           mCanHideNavigationBar = true;
