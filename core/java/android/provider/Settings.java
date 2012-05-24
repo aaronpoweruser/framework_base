@@ -3541,10 +3541,27 @@ public final class Settings {
         /**
          * hide
          */
+
         public static final String SYSTEMUI_SOFTKEY_SCREENSHOT = "screenshot";
         
         /**
          * hide
+        @Deprecated
+        **/
+        public static final String WIFI_WATCHDOG_PING_TIMEOUT_MS =
+            Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
+
+
+        /**
+         * Whether to show the stock music layout on the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_STOCK_MUSIC_LAYOUT = "lockscreen_stock_music_layout";
+
+        /**
+         * How to show weather on the statusbar
+         *
+         * @hide
          */
         public static final String SYSTEMUI_SOFTKEY_SCREENOFF = "screenoff";
         
