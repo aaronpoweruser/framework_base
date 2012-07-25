@@ -1532,7 +1532,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (updateRotation) {
             updateRotation(true);
         }
-        boolean showNavBarNow = Settings.System.getBoolean(resolver,
+       /* boolean showNavBarNow = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
         int NavHeight = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_HEIGHT, 0);
@@ -1553,7 +1553,7 @@ b
                     Settings.System.NAVIGATION_BAR_SHOW, 1) &&	
                         Settings.System.getBoolean(mContext.getContentResolver(),	
                                Settings.System.NAVIGATION_BAR_SHOW_NOW, mHasNavigationBar); 
-            mHasNavigationBar !=*/
+            mHasNavigationBar !=
         if (mHasNavigationBar!= showNavBarNow) {
             mHasNavigationBar = showNavBarNow;
             if(mDisplay != null)
