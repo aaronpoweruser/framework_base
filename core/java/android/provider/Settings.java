@@ -3551,14 +3551,6 @@ public final class Settings {
         public static final String SYSTEMUI_SOFTKEY_SCREENSHOT = "screenshot";
         
         /**
-         * hide
-        @Deprecated
-        **/
-        public static final String WIFI_WATCHDOG_PING_TIMEOUT_MS =
-            Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
-
-
-        /**
          * Whether to show the stock music layout on the lockscreen
          * @hide
          */

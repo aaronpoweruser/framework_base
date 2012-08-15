@@ -350,14 +350,6 @@ public class SearchPanelView extends FrameLayout implements
             } else if (targetActivities.get(i).equals("screenshot")) {
                 storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_navbar_screenshot)));
                 storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_screenshot)));
-            } else if (targetActivities.get(i).equals("ime_switcher")) {
-                storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_ime_switcher)));
-            } else if (targetActivities.get(i).equals("ring_vib")) {
-                storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_vib)));
-            } else if (targetActivities.get(i).equals("ring_silent")) {
-                storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_silent)));
-            } else if (targetActivities.get(i).equals("ring_vib_silent")) {
-                storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_ring_vib_silent)));
             } else if (targetActivities.get(i).equals("killcurrent")) {
                 storedDraw.add(new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_killtask)));
             } else if (targetActivities.get(i).equals("power")) {
