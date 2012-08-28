@@ -125,7 +125,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     public SettingsView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = getContext();
-
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
@@ -272,6 +271,11 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             Object tag = v.getTag();
             if (tag instanceof ButtonTag)
                 onClickToggle(((ButtonTag) tag).toggleId);
+        }
+        switch (v.getId()) {
+            case R.id.settings:
+                onClickSettings();
+                break;
         }
     }
 

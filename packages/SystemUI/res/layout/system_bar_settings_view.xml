@@ -29,9 +29,19 @@
         android:orientation="vertical"
         >
 
+
     <!-- Power widget buttons will be added here -->
 
     <View style="@style/StatusBarPanelSettingsPanelSeparator" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/quick_toggles" />
+
+    <View
+            android:id="@+id/rotate_separator"
+            style="@style/StatusBarPanelSettingsPanelSeparator" />
 
     <!-- Brightness -->
     <LinearLayout style="@style/StatusBarPanelSettingsRow" >
