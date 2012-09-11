@@ -2417,12 +2417,39 @@ public final class Settings {
         public static final String WIDGET_BUTTONS_TABLET = "expanded_widget_buttons_tablet";
 
         /**
+         * Navigation bar, whether to show or hide
+         * @hide
+         */
+        public static final String NAV_BAR_STATUS = "nav_bar_status";
 
+
+        /**
          * Navigation controls to Use
          *
          * @hide
          */
         public static final String NAV_BUTTONS = "nav_buttons";
+
+        /**
+         * Enable Menu key
+         *
+         * @hide
+         */
+        public static final String KEY_MENU_ENABLED = "key_menu_enabled";
+
+        /**
+         * Enable Back key
+         *
+         * @hide
+         */
+        public static final String KEY_BACK_ENABLED = "key_back_enabled";
+
+        /**
+         * Enable Home key
+         *
+         * @hide
+         */
+        public static final String KEY_HOME_ENABLED = "key_home_enabled";
 
         /**
         * Notification Power Widget - Custom Brightness Mode
@@ -2466,6 +2493,12 @@ public final class Settings {
         * @hide
         */
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
+
+        /**
+        * Number of notification symbols
+        * @hide
+        */
+        public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
 
         /**
          * Display style of AM/PM next to clock in status bar
@@ -2525,6 +2558,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
+
+        /**
+         * Statusbar State
+         * @hide
+         */
+        public static final String STATUSBAR_STATE = "statusbar_state";
+
 
         /**
          * Whether to use a separate delay for "slide to unlock" and security

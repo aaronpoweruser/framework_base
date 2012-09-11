@@ -21,11 +21,13 @@ import android.animation.LayoutTransition;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -38,6 +40,8 @@ import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.DisplayMetrics;
+import android.util.ExtendedPropertiesUtils;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.IWindowManager;
@@ -100,10 +104,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private boolean mRecentTasksDirty = true;
     private TaskDescriptionAdapter mListAdapter;
     private int mThumbnailWidth;
+    private int mThumbnailHeight;
     private boolean mFitThumbnailToXY;
     private int mRecentItemLayoutId;
     private boolean mFirstScreenful = true;
     private boolean mHighEndGfx;
+    private int mAndroidDpi = DisplayMetrics.DENSITY_DEVICE;
 
     public static interface OnRecentsPanelVisibilityChangedListener {
         public void onRecentsPanelVisibilityChanged(boolean visible);
@@ -162,6 +168,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             holder.thumbnailView = convertView.findViewById(R.id.app_thumbnail);
             holder.thumbnailViewImage =
                     (ImageView) convertView.findViewById(R.id.app_thumbnail_image);
+
+            holder.thumbnailViewImage.getLayoutParams().width = mThumbnailWidth;
+            holder.thumbnailViewImage.getLayoutParams().height = mThumbnailHeight;
+
             // If we set the default thumbnail now, we avoid an onLayout when we update
             // the thumbnail later (if they both have the same dimensions)
             if (mRecentTasksLoader != null) {
@@ -463,7 +473,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     public void updateValuesFromResources() {
         final Resources res = mContext.getResources();
-        mThumbnailWidth = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_width));
+        mAndroidDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
+        mThumbnailWidth = Math.round((float)res.getDimension(R.dimen.status_bar_recents_thumbnail_width) * DisplayMetrics.DENSITY_DEVICE / mAndroidDpi);
+        mThumbnailHeight = Math.round((float)res.getDimension(R.dimen.status_bar_recents_thumbnail_height) * DisplayMetrics.DENSITY_DEVICE / mAndroidDpi);
+
         mFitThumbnailToXY = res.getBoolean(R.bool.config_recents_thumbnail_image_fits_to_xy);
     }
 
@@ -562,6 +575,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             // Should remove the default image in the frame
             // that this now covers, to improve scrolling speed.
             // That can't be done until the anim is complete though.
+            thumbnail.setDensity(mAndroidDpi);
             h.thumbnailViewImage.setImageBitmap(thumbnail);
 
             // scale the image to fill the full width of the ImageView. do this only if
@@ -896,6 +910,23 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         mBar.animateCollapse(CommandQueue.FLAG_EXCLUDE_NONE);
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
+                    }
+                } else if (item.getItemId() == R.id.recent_hybrid_item) {
+                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+                    if (viewHolder != null) {
+                        final TaskDescription ad = viewHolder.taskDescription;
+                        ApplicationInfo appInfo = ExtendedPropertiesUtils.getAppInfoFromPackageName(ad.packageName);
+                        if (appInfo != null) {
+                            Intent intent = new Intent("android.intent.action.MAIN");
+                            intent.putExtra("package", ad.packageName);
+                            intent.putExtra("appname", ad.getLabel().toString());
+                            intent.putExtra("filename", appInfo.sourceDir);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setComponent(new ComponentName("com.paranoid.preferences", "com.paranoid.preferences.hybrid.ViewPagerActivity"));
+                            getContext().startActivity(intent);
+                            hide(true);
+                        }
                     }
                 } else {
                     return false;

@@ -27,6 +27,7 @@ import android.util.Slog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -427,6 +428,20 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
             mSettingsButton.setEnabled(settingsEnabled);
             mSettingsButton.setVisibility(settingsEnabled ? View.VISIBLE : View.GONE);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
+        switch (event.getKeyCode()) {
+        case KeyEvent.KEYCODE_BACK:
+            if (!down && isShowing()) {
+                show(false, true);
+                mBar.mNotificationArea.setVisibility(View.VISIBLE);
+            }
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
     }
 }
 

@@ -94,6 +94,7 @@ import android.os.SystemProperties;
 import android.os.TokenWatcher;
 import android.os.Trace;
 import android.provider.Settings;
+import android.util.ExtendedPropertiesUtils;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.FloatMath;
@@ -5608,7 +5609,6 @@ public class WindowManagerService extends IWindowManager.Stub
         Canvas canvas = new Canvas(bm);
         canvas.drawBitmap(rawss, matrix, null);
         canvas.setBitmap(null);
-
         rawss.recycle();
         return bm;
     }
@@ -9582,6 +9582,11 @@ public class WindowManagerService extends IWindowManager.Stub
     @Override
     public boolean hasNavigationBar() {
         return mPolicy.hasNavigationBar();
+    }
+
+    @Override
+    public boolean hasHardwareKeys() {
+        return mPolicy.hasHardwareKeys();
     }
 
     public void lockNow() {
