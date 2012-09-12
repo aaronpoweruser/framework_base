@@ -38,5 +38,8 @@
     <declare-styleable name="BatteryBarController">
         <attr name="viewLocation" format="integer" />
     </declare-styleable>
+    <declare-styleable name="Clock">
+       <attr name="showAlways" format="boolean" />
+    </declare-styleable>
 </resources>
 

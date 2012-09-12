@@ -1,5 +1,7 @@
 /*
  *
+ * This code has been modified.  Portions copyright (C) 2012, The CyanogenMod Project.
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1230,10 +1232,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mExternalDisplayWidth = mDisplay.getRawExternalWidth();
         mExternalDisplayHeight = mDisplay.getRawExternalHeight();
 
-        mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.status_bar_height);
+       // mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
+       //         com.android.internal.R.dimen.status_bar_height);
+        getDimensions();
 
-        // Height of the navigation bar when presented horizontally at bottom
+      /*  // Height of the navigation bar when presented horizontally at bottom
         mNavigationBarHeightForRotation[mPortraitRotation] =
         mNavigationBarHeightForRotation[mUpsideDownRotation] =
                 Settings.System.getInt(
@@ -1241,9 +1244,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_HEIGHT,
                     mContext.getResources()
                             .getDimensionPixelSize(
-                                    com.android.internal.R.dimen.navigation_bar_height));
+                                    com.android.internal.R.dimen.navigation_bar_height)); */
 
-        mNavigationBarHeightForRotation[mLandscapeRotation] =
+ int sysLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
+
+  /*      mNavigationBarHeightForRotation[mLandscapeRotation] =
         mNavigationBarHeightForRotation[mSeascapeRotation] =
                 Settings.System.getInt(
                     mContext.getContentResolver(),
@@ -1262,20 +1267,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_WIDTH,
                     mContext.getResources()
                             .getDimensionPixelSize(
-                                    com.android.internal.R.dimen.navigation_bar_width));
+                                    com.android.internal.R.dimen.navigation_bar_width)); */
 
-        // SystemUI (status bar) layout policy
-        int shortSizeDp = shortSize
-                * DisplayMetrics.DENSITY_DEFAULT
-                / DisplayMetrics.DENSITY_DEVICE;
-
-        if (shortSizeDp < 600) {
+      if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
             mNavigationBarCanMove = true;
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.TABLET_UI, 0);
-        } else if (shortSizeDp < 720) {
+        } else if (sysLayout < 720) {
             // 600-719dp: "phone" UI with modifications for larger screens
             mHasSystemNavBar = false;
             mNavigationBarCanMove = false;
@@ -1289,62 +1289,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.TABLET_UI, 1);
         }
 
-        if (!mHasSystemNavBar) {
-            final boolean showByDefault = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
-            mHasNavigationBar = Settings.System.getBoolean(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
-
-            /*
-             * at first boot up, we need to make sure navbar gets created
-             * (or obey framework setting). 
-             * this should quickly get over-ridden by the settings observer
-             * if it was disabled by the user.
-            */
-            if (mNavBarFirstBootFlag) {
-                mHasNavigationBar = (showByDefault);
-                mNavBarFirstBootFlag = false;
-            }
-        } else {
-            // Allow a system property to override this. Used by the emulator.
-            // See also hasNavigationBar().
-            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
-            if (!"".equals(navBarOverride)) {
-                if (navBarOverride.equals("1"))
-                    mHasNavigationBar = false;
-                else if (navBarOverride.equals("0"))
-                    mHasNavigationBar = true;
-            }
-        }
-
-        if (!mHasNavigationBar) {
-            mNavigationBarWidthForRotation[mPortraitRotation] =
-                    mNavigationBarWidthForRotation[mUpsideDownRotation] =
-                    mNavigationBarWidthForRotation[mLandscapeRotation] =
-                    mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
-            mNavigationBarHeightForRotation[mPortraitRotation] =
-                    mNavigationBarHeightForRotation[mUpsideDownRotation] =
-                    mNavigationBarHeightForRotation[mLandscapeRotation] =
-                    mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
-        }
+      mHasNavigationBar = !mHasSystemNavBar;
+     
 
         if (mHasSystemNavBar) {
-            // The system bar is always at the bottom. If you are watching
-            // a video in landscape, we don't need to hide it if we can
-            // still
-            // show a 16:9 aspect ratio with it.
-            int longSizeDp = longSize
-                    * DisplayMetrics.DENSITY_DEFAULT
-                    / DisplayMetrics.DENSITY_DEVICE;
-            int barHeightDp = mNavigationBarHeightForRotation[mLandscapeRotation]
-                    * DisplayMetrics.DENSITY_DEFAULT
-                    / DisplayMetrics.DENSITY_DEVICE;
-            int aspect = ((shortSizeDp - barHeightDp) * 16) / longSizeDp;
-            // We have computed the aspect ratio with the bar height taken
-            // out to be 16:aspect. If this is less than 9, then hiding
-            // the navigation bar will provide more useful space for wide
-            // screen movies.
-            mCanHideNavigationBar = aspect < 9;
+          mCanHideNavigationBar = true;
         } else if (mHasNavigationBar) {
             // The navigation bar is at the right in landscape; it seems
             // always useful to hide it for showing a video.

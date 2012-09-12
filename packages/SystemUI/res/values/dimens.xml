@@ -159,4 +159,6 @@
 
     <!-- Height of the system bar settings view -->
     <dimen name="system_bar_settings_view_height">-1dp</dimen>
+ <!-- Bottom margin for settings view scrollview -->
+    <dimen name="settings_view_margin_bottom">15dp</dimen>
 </resources>

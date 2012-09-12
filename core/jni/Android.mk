@@ -77,7 +77,6 @@ LOCAL_SRC_FILES:= \
 	android_net_TrafficStats.cpp \
 	android_net_wifi_Wifi.cpp \
 	android_nio_utils.cpp \
-	android_util_PackageRedirectionMap.cpp \
 	android_text_format_Time.cpp \
 	android_util_AssetManager.cpp \
 	android_util_Binder.cpp \
@@ -88,6 +87,7 @@ LOCAL_SRC_FILES:= \
 	android_util_Process.cpp \
 	android_util_StringBlock.cpp \
 	android_util_XmlBlock.cpp \
+	android_util_PackageRedirectionMap.cpp \
 	android/graphics/AutoDecodeCancel.cpp \
 	android/graphics/Bitmap.cpp \
 	android/graphics/BitmapFactory.cpp \

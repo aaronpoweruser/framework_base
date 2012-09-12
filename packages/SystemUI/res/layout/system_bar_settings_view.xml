@@ -20,6 +20,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
     android:layout_height="@dimen/system_bar_settings_view_height"
+    android:layout_marginBottom="@dimen/settings_view_margin_bottom"
     android:layout_width="match_parent">
 
 <com.android.systemui.statusbar.tablet.SettingsView
