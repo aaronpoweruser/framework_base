@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (c) 2012, Code Aurora Forum. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,6 +236,9 @@ public class MediaRecorder
 
         /** @hide H.264/AAC data encapsulated in MPEG2/TS */
         public static final int OUTPUT_FORMAT_MPEG2TS = 8;
+
+        /** QCP file format */
+        public static final int QCP = 9;
     };
 
     /**
@@ -257,6 +261,12 @@ public class MediaRecorder
         public static final int HE_AAC = 4;
         /** Enhanced Low Delay AAC (AAC-ELD) audio codec */
         public static final int AAC_ELD = 5;
+        /** EVRC audio codec */
+        public static final int EVRC = 6;
+        /** QCELP audio codec */
+        public static final int QCELP =7;
+        /** Linear PCM audio codec */
+        public static final int LPCM =8;
     }
 
     /**
@@ -351,12 +361,11 @@ public class MediaRecorder
      */
     public void setCaptureRate(double fps) {
         // Make sure that time lapse is enabled when this method is called.
-        setParameter(String.format("time-lapse-enable=1"));
+        setParameter("time-lapse-enable=1");
 
         double timeBetweenFrameCapture = 1 / fps;
         int timeBetweenFrameCaptureMs = (int) (1000 * timeBetweenFrameCapture);
-        setParameter(String.format("time-between-time-lapse-frame-capture=%d",
-                    timeBetweenFrameCaptureMs));
+        setParameter("time-between-time-lapse-frame-capture=" + timeBetweenFrameCaptureMs);
     }
 
     /**

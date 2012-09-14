@@ -1401,9 +1401,10 @@ public final class Settings {
         public static final String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED =
             "lock_pattern_tactile_feedback_enabled";
 
-	     /**
+        /**
          * @deprecated Use {@link android.provider.Settings.Secure#LOCK_PATTERN_SIZE}
          * instead
+         * @hide
          */
         @Deprecated
         public static final String LOCK_PATTERN_SIZE =
@@ -3232,6 +3233,13 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
 
+        /**
+         * Used to determine if NavBar is currently shown or hidden as a user choice
+         *
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
+
          /**
          * Navigation bar height in portrait
          * @hide
@@ -3503,22 +3511,22 @@ public final class Settings {
         public static final String SYSTEMUI_NAVRING_ASSIST = "assist";
 
         /**
-         * hide
+         * @hide
          */
         public static final String SYSTEMUI_SOFTKEY_REBOOT = "reboot";
         
         /**
-         * hide
+         * @hide
          */
         public static final String SYSTEMUI_SOFTKEY_SCREENSHOT = "screenshot";
         
         /**
-         * hide
+         * @hide
          */
         public static final String SYSTEMUI_SOFTKEY_SCREENOFF = "screenoff";
         
         /**
-         * hide
+         * @hide
          */
         public static final String SYSTEMUI_SOFTKEY_KILL_PROCESS = "killcurrent";
 
@@ -4120,6 +4128,7 @@ public final class Settings {
 
 		/**
          * Size of pattern lockscreen
+         * @hide
          */
         public static final String LOCK_PATTERN_SIZE =
             "lock_pattern_size";

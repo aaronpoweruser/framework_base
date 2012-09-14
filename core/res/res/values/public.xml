@@ -264,6 +264,7 @@
   <java-symbol type="bool" name="config_useMasterVolume" />
   <java-symbol type="bool" name="config_enableWallpaperService" />
   <java-symbol type="bool" name="config_sendAudioBecomingNoisy" />
+  <java-symbol type="bool" name="config_show_cmIMESwitcher"/>
   <java-symbol type="bool" name="config_enableScreenshotChord" />
   <java-symbol type="bool" name="config_bluetooth_default_profiles" />
   <java-symbol type="bool" name="config_umtsEverestRadio" />
@@ -3647,7 +3648,6 @@
   <public type="color" name="holo_orange_dark" id="0x01060019" />
   <public type="color" name="holo_purple" id="0x0106001a" />
   <public type="color" name="holo_blue_bright" id="0x0106001b" />
-  <public type="color" name="holo_white_light" id="0x0106001c" />
 
 <!-- ===============================================================
    Resources added in version 16 of the platform (Jelly Bean)
@@ -3852,6 +3852,8 @@
   <eat-comment />
 
   <java-symbol type="string" name="config_legacyUmsLunFile" />
+  <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
+  <java-symbol type="bool" name="config_autoBrightnessButtonKeyboard" />
   
   <!-- Hide Navbar -->
   <java-symbol type="layout" name="global_actions_navbar_mode" />
