@@ -3385,17 +3385,7 @@ public final class Settings {
          */
         public static final String NOTIF_WALLPAPER_ALPHA = "notif_wallpaper_alpha";
 
-<<<<<<< HEAD
-		/**
-=======
         /**
-         * Whether to attempt to dim the LED color during quiet hours.
-         * @hide
-         */
-        public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
-
-        /**
->>>>>>> f6cad54... bluewall firewall (1/2)
          * where to show the legacy menu key
          * 0 = right (default)
          * 1 = left
@@ -3646,8 +3636,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_WIFI_SIGNAL_TEXT_COLOR = "statusbar_wifi_signal_text_color";
-
-        public static final String WEATHER_SHOW_LOCATION = "weather_show_location";
 
         /**
          * How long to wait between playing notification sounds from a package
