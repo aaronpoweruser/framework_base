@@ -2636,6 +2636,13 @@ public final class Settings {
          */
         public static final String QUIET_HOURS_ENABLED = "quiet_hours_enabled";
 
+         /**
+         * Whether to enable quiet hours for blue wall.
+         * @hide
+         */
+        public static final String QUIET_HOURS_NOTIFICATIONS = "QUIET_HOURS_NOTIFICATIONS";
+
+
         /**
          * Sets when quiet hours starts. This is stored in minutes from the start of the day.
          * @hide
