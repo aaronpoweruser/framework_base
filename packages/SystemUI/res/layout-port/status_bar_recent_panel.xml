@@ -68,6 +68,13 @@
 
         </com.android.systemui.recent.RecentsVerticalScrollView>
 
+         <ImageView
+            android:id="@+id/recents_clear"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:src="@drawable/ic_notify_clear" />
 
         <com.android.systemui.recent.MemoryInfoView
             android:id="@+id/memory_info"
@@ -104,7 +111,6 @@
                 android:textColor="#ff000000" />
 
         </com.android.systemui.recent.MemoryInfoView>
-
 
     </FrameLayout>
 

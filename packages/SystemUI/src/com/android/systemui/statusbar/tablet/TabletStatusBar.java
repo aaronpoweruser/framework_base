@@ -494,30 +494,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         int newNavIconWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
         int newMenuNavIconWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
 
-
-        if (mNavigationArea != null && newNavIconWidth != mNavIconWidth) {
-            mNavIconWidth = newNavIconWidth;
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                     mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            mBackButton.setLayoutParams(lp);
-            mHomeButton.setLayoutParams(lp);
-
-            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-                     mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-
-            mRecentButton.setLayoutParams(rlp);
-        }
-
-        if (mNavigationArea != null && newMenuNavIconWidth != mMenuNavIconWidth) {
-            mMenuNavIconWidth = newMenuNavIconWidth;
-
-            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-                     mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            mMenuButton.setLayoutParams(rlp);
-        }
-
-
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
             Slog.d(TAG, "size=" + newIconSize + " padding=" + newIconHPadding);
             mIconHPadding = newIconHPadding;
@@ -601,40 +577,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                 (SignalClusterView)sb.findViewById(R.id.signal_cluster);
         mNetworkController.addSignalCluster(signalCluster);
 
-
-        // The navigation buttons
-        mBackButton = (ImageView)sb.findViewById(R.id.back);
-        mNavigationArea = (ViewGroup) sb.findViewById(R.id.navigationArea);
-        mHomeButton = mNavigationArea.findViewById(R.id.home);
-        mMenuButton = mNavigationArea.findViewById(R.id.menu);
-        mRecentButton = mNavigationArea.findViewById(R.id.recent_apps);
-
-        mRecentButton.setOnLongClickListener(new OnLongClickListener() {
-            public boolean onLongClick(View v) {
-                try {
-                    Runtime.getRuntime().exec("input keyevent 82");
-                } catch (Exception ex) { }
-                mButtonBusy = false;
-                return true;        
-            }
-        });
-
-        mRecentButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                if (DEBUG) 
-                    Slog.d(TAG, "clicked recent apps; disabled=" + mDisabled);
-                if(mButtonBusy){
-                    if ((mDisabled & StatusBarManager.DISABLE_EXPAND) == 0) {
-                        int msg = (mRecentsPanel.getVisibility() == View.VISIBLE)
-                            ? MSG_CLOSE_RECENTS_PANEL : MSG_OPEN_RECENTS_PANEL;
-                        mHandler.removeMessages(msg);
-                        mHandler.sendEmptyMessage(msg);
-                    }
-                } else
-                    mButtonBusy = true;
-            }
-        });
-
         LayoutTransition lt = new LayoutTransition();
         lt.setDuration(250);
         // don't wait for these transitions; we just want icons to fade in/out, not move around
@@ -650,11 +592,6 @@ public class TabletStatusBar extends BaseStatusBar implements
             public void startTransition(LayoutTransition transition, ViewGroup container,
                     View view, int transitionType) {}
         });
-
-        mNavigationArea.setLayoutTransition(lt);
-        // no multi-touch on the nav buttons
-        mNavigationArea.setMotionEventSplittingEnabled(false);
-        mNavigationArea.setVisibility(Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 ? View.VISIBLE : View.GONE);
 
 
         // The bar contents buttons

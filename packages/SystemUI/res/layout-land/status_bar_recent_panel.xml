@@ -70,6 +70,14 @@
 
         </com.android.systemui.recent.RecentsHorizontalScrollView>
 
+         <ImageView
+            android:id="@+id/recents_clear"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:src="@drawable/ic_notify_clear" />
+
         <com.android.systemui.recent.MemoryInfoView
             android:id="@+id/memory_info"
             android:layout_width="match_parent"
