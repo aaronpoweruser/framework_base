@@ -1554,7 +1554,7 @@ b
                         Settings.System.getBoolean(mContext.getContentResolver(),	
                                Settings.System.NAVIGATION_BAR_SHOW_NOW, mHasNavigationBar); 
             mHasNavigationBar !=*/
-        if ( showNavBarNow) {
+        if (mHasNavigationBar!= showNavBarNow) {
             mHasNavigationBar = showNavBarNow;
             if(mDisplay != null)
                 setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
