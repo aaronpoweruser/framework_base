@@ -71,7 +71,7 @@
 
         <com.android.systemui.recent.MemoryInfoView
             android:id="@+id/memory_info"
-            android:layout_width="350dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom" >
 

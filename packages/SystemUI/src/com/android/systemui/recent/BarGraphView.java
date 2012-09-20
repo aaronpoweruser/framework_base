@@ -37,7 +37,7 @@ public class BarGraphView extends View {
    		super(context, attrs, defStyle);
    		Resources res = context.getResources();
         mUsedPaint = new Paint();
-        mUsedPaint.setColor(res.getColor(android.R.color.holo_blue_light));
+        mUsedPaint.setColor(res.getColor(android.R.color.holo_blue_dark));
         mUsedPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mUsedPaint.setAntiAlias(true);
         mFreePaint = new Paint();
@@ -58,11 +58,11 @@ public class BarGraphView extends View {
    	public void draw(Canvas canvas) {
         int width = (int)((float)this.getWidth() * (float)used/(float)(used+free));
         float cy = (float)this.getHeight() / 2.0f;
-        canvas.drawCircle(cy, cy, cy, mUsedPaint);
-        canvas.drawRect((int)cy, 0, width, this.getHeight(), mUsedPaint);
-        float cx = this.getWidth() - cy;
-        canvas.drawCircle(cx, cy, cy, mFreePaint);
-        canvas.drawRect(width, 0, (int)cx, this.getHeight(), mFreePaint);
+       // canvas.drawCircle(cy, cy, cy, mUsedPaint);
+        canvas.drawRect(0, 0, width, this.getHeight(), mUsedPaint);
+       // float cx = this.getWidth() - cy;
+       // canvas.drawCircle(cx, cy, cy, mFreePaint);
+        canvas.drawRect(width, 0, this.getWidth(), this.getHeight(), mFreePaint);
    	}
 }
 

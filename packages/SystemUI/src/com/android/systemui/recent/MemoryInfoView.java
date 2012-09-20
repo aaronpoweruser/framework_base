@@ -37,7 +37,7 @@ import com.android.systemui.recent.BarGraphView;
 
 public class MemoryInfoView extends RelativeLayout {
     static final String TAG = "MemoryInfoView";
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
 
     MemInfoReader mMemInfoReader = new MemInfoReader();
 
