@@ -1534,40 +1534,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         boolean showNavBarNow = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
-      int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
-        int sysUIDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
-        
-        float navigationBarHeight = ((float)Settings.System.getInt(	
-                    mContext.getContentResolver(),	
-                    Settings.System.NAVIGATION_BAR_HEIGHT,	
-                    mContext.getResources()	
-                            .getDimensionPixelSize(
-                                    com.android.internal.R.dimen.navigation_bar_height)) * 
-                                    DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-                                    DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
-
-        float navigationBarWidth = ((float)Settings.System.getInt(	
-                    mContext.getContentResolver(),	
-                    Settings.System.NAVIGATION_BAR_WIDTH,	
-                    mContext.getResources()	
-                            .getDimensionPixelSize(
-                                    com.android.internal.R.dimen.navigation_bar_width)) * 
-                                    DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-                                    DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
-
-        
-        float navigationBarHeightLandscape = ((float)Settings.System.getInt(	
-                    mContext.getContentResolver(),	
-                    Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE,	
-                    mContext.getResources()	
-                            .getDimensionPixelSize(
-                                    com.android.internal.R.dimen.navigation_bar_height_landscape)) * 
-                                    DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-                                    DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
-
-        NavHeight = Math.round(navigationBarHeight);
-        NavHeightLand = Math.round(navigationBarHeightLandscape);
-        NavWidth = Math.round(navigationBarWidth);
+        int NavHeight = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_HEIGHT, 0);
+        int NavHeightLand = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE, 0);
+        int NavWidth = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_WIDTH, 0);
         if (NavHeight != mUserNavBarHeight || NavHeightLand != mUserNavBarHeightLand || NavWidth != mUserNavBarWidth) {
             mUserNavBarHeight = NavHeight;
             mUserNavBarHeightLand = NavHeightLand;
