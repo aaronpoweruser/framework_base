@@ -68,6 +68,7 @@
 
         </com.android.systemui.recent.RecentsVerticalScrollView>
 
+<<<<<<< HEAD
 
         <com.android.systemui.recent.MemoryInfoView
             android:id="@+id/memory_info"

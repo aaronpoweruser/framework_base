@@ -3604,6 +3604,7 @@ public final class Settings {
          */
         public static final String STATUS_BAR_LAYOUT = "statusbar_layout";
 
+<<<<<<< HEAD
         /**
          * whether to hide the kill-all-button on recent switcher
          *
@@ -3660,6 +3661,8 @@ public final class Settings {
          */
         public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
 
+=======
+>>>>>>> parent of b51c081... Add hide able kill-all-button to recent switcher
     }
 
     /**
