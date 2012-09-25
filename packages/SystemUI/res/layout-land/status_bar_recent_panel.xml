@@ -70,8 +70,6 @@
 
         </com.android.systemui.recent.RecentsHorizontalScrollView>
 
-<<<<<<< HEAD
-
         <com.android.systemui.recent.MemoryInfoView
             android:id="@+id/memory_info"
             android:layout_width="350dip"

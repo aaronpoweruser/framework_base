@@ -3604,7 +3604,7 @@ public final class Settings {
          */
         public static final String STATUS_BAR_LAYOUT = "statusbar_layout";
 
-<<<<<<< HEAD
+
         /**
          * whether to hide the kill-all-button on recent switcher
          *
