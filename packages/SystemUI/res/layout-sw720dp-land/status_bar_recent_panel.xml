@@ -32,13 +32,15 @@
         android:layout_width="match_parent"
         android:visibility="invisible" />
     <FrameLayout
-        android:id="@+id/recents_bg_protect"
+         android:id="@+id/recents_bg_protect"
         android:background="@drawable/status_bar_recents_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/memory_info"
+        android:layout_marginBottom="@*android:dimen/system_bar_height"
         android:clipToPadding="false"
         android:clipChildren="false">
+
 
         <ImageView
             android:id="@+id/recents_transition_placeholder_icon"
