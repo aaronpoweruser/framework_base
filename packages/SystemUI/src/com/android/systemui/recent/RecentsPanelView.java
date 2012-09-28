@@ -685,6 +685,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 onTasksLoaded(recentTasksList);
             } else {
                 mFirstScreenful = true;
+                clearRecentTasksList();
                 mRecentTasksLoader.loadTasksInBackground();
             }
             mRecentTasksDirty = false;
