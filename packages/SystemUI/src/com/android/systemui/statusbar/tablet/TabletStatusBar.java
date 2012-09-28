@@ -478,6 +478,8 @@ public class TabletStatusBar extends BaseStatusBar implements
 
             recreateStatusBar();
 
+            setStatusBarParams(mStatusBarView);
+
         }
         loadDimens();
         mNotificationPanelParams.height = getNotificationPanelHeight();

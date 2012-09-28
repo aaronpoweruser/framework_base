@@ -2470,11 +2470,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (newTheme != null &&
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
-            try {
-                Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
-            } catch (IOException e) {
-                // we're screwed here fellas
-            }
+            recreateStatusBar();
             setStatusBarParams(mStatusBarView);
         } else {
 
