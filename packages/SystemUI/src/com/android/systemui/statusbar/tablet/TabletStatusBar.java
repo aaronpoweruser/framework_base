@@ -47,6 +47,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.util.Slog;
 import android.view.Display;
 import android.view.Gravity;
@@ -66,16 +67,11 @@ import android.view.WindowManagerImpl;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-<<<<<<< HEAD
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
-=======
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsPanelView;
@@ -85,13 +81,11 @@ import com.android.systemui.statusbar.DoNotDisturb;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
+import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.statusbar.NotificationData.Entry;
-<<<<<<< HEAD
 import com.android.systemui.statusbar.policy.BatteryController;
-=======
 import com.android.systemui.statusbar.phone.NavigationBarView;
-import com.android.systemui.statusbar.policy.DockBatteryController;
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CompatModeButton;
 import com.android.systemui.statusbar.policy.LocationController;
@@ -221,7 +215,6 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     public Context getContext() { return mContext; }
 
-<<<<<<< HEAD
 
     private Runnable mShowSearchPanel = new Runnable() {
         public void run() {
@@ -229,28 +222,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
     };
 
-    private View.OnTouchListener mHomeSearchActionListener = new View.OnTouchListener() {
-        public boolean onTouch(View v, MotionEvent event) {
-            switch(event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (!shouldDisableNavbarGestures() && !inKeyguardRestrictedInputMode()) {
-                        mHandler.removeCallbacks(mShowSearchPanel);
-                        mHandler.postDelayed(mShowSearchPanel, mShowSearchHoldoff);
-                    }
-                break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    mHandler.removeCallbacks(mShowSearchPanel);
-                break;
-            }
-            return false;
-        }
-    };
-=======
-    // storage
-    private StorageManager mStorageManager;
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
+   
 
     @Override
     protected void createAndAddWindows() {
@@ -300,12 +272,15 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
+             resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             setStatusBarParams(mStatusBarView);
             loadDimens();
+            updateSettings();
             recreateStatusBar();
         }
     }
@@ -463,7 +438,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         super.start(); // will add the main bar view
     }
 
-<<<<<<< HEAD
     private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,
             NotificationData source) {
         int N = source.size();
@@ -480,7 +454,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mRecreating = false;
     }
 
-=======
     public void UpdateWeights(boolean landscape) {
         final float min = landscape ? NAVBAR_MIN_LAND : NAVBAR_MIN_PORTRAIT;
         final float max = landscape ? NAVBAR_MAX_LAND : NAVBAR_MAX_PORTRAIT;
@@ -493,7 +466,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         mNavigationArea.setLayoutParams(new LinearLayout.LayoutParams(0,LayoutParams.MATCH_PARENT,nav));
         mNotificationHolder.setLayoutParams(new LinearLayout.LayoutParams(0,LayoutParams.MATCH_PARENT,notif));
    }
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
+
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
@@ -542,10 +515,7 @@ public class TabletStatusBar extends BaseStatusBar implements
             R.dimen.status_bar_icon_padding);
 
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
-<<<<<<< HEAD
             Slog.d(TAG, "size=" + newIconSize + " padding=" + newIconHPadding);
-=======
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
             mIconHPadding = newIconHPadding;
             mIconSize = newIconSize;
             reloadAllNotificationIcons(); // reload the tray
@@ -569,8 +539,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     protected View makeStatusBarView() {
         final Context context = mContext;
 
-        mShowSearchHoldoff = mContext.getResources().getInteger(
-                R.integer.config_show_search_delay);
 
         mWindowManager = IWindowManager.Stub.asInterface(
                 ServiceManager.getService(Context.WINDOW_SERVICE));
@@ -1757,24 +1725,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                 || (mDisabled & StatusBarManager.DISABLE_HOME) != 0;
     }
 
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false,
-                    this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            updateSettings();
-        }
-    }
-
+   
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 

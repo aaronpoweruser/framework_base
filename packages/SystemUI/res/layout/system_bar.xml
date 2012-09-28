@@ -28,28 +28,6 @@
         android:layout_height="@*android:dimen/system_bar_height"
         android:layout_gravity="bottom"
         >
-<<<<<<< HEAD
-        <RelativeLayout
-            android:id="@+id/bar_contents"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            >
-
-            <!-- notification icons & panel access -->
-            <include layout="@layout/system_bar_notification_area" 
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="1dp"
-                />
-         
-            <!-- navigation controls -->
-            <include layout="@layout/navigation_bar"
-                android:layout_width="350dip"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"/>
-=======
         <!-- navigation controls -->
         <LinearLayout
                android:id="@+id/navigationArea"
@@ -61,7 +39,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
          </LinearLayout>
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
 
         <!-- fake space bar zone -->
         <LinearLayout
