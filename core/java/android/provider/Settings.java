@@ -3702,8 +3702,18 @@ public final class Settings {
          * Should be in milliseconds. 0 to disable
          * @hide
          */
+
         public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
 
+
+        
+        /**
+         * use Alt Activity Resolver Grid (GB style)
+         * boolean
+         *
+         * @hide
+         */
+        public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
 
     }
 
