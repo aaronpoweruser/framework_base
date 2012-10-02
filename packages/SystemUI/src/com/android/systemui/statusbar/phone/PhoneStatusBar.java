@@ -298,6 +298,41 @@ public class PhoneStatusBar extends BaseStatusBar {
     private BrightNessContentObserver mBrightNessContentObs = new BrightNessContentObserver();
     private Float mPropFactor;
 
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_TRANSPARENCY), false, this);
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        public void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            boolean autoBrightness = Settings.System.getInt(
+                    resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0) ==
+                    Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+            mBrightnessControl = !autoBrightness && Settings.System.getInt(
+                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+            setStatusBarParams(mStatusBarView);
+            setNavigationBarParams();
+        }
+    }
+
     private int mNavigationIconHints = 0;
     private final Animator.AnimatorListener mMakeIconsInvisible = new AnimatorListenerAdapter() {
         @Override
@@ -751,6 +786,12 @@ public class PhoneStatusBar extends BaseStatusBar {
         		mNavigationBarView.getHomeButton().setOnTouchListener(mHomeSearchActionListener);
         }
         updateSearchPanel();
+    }
+
+    protected void setNavigationBarParams(){
+        int opacity = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_TRANSPARENCY, 100);
+        mNavigationBarView.getBackground().setAlpha(Math.round((opacity * 255) / 100));
     }
 
     // For small-screen devices (read: phones) that lack hardware navigation buttons
@@ -2476,6 +2517,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 // we're screwed here fellas
             } 
             setStatusBarParams(mStatusBarView);
+            setNavigationBarParams();
         } else {
 
             if (mClearButton instanceof TextView) {

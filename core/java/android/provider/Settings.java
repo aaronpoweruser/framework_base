@@ -2425,6 +2425,20 @@ public final class Settings {
 
 
         /**
+         * Navigation bar transparency value
+         * from 0% to 100%
+         * @hide
+         */
+        public static final String NAV_BAR_TRANSPARENCY = "nav_bar_transparency";
+
+        /**
+         * Navigation bar, separate menu button in TabUI, whether to show or hide
+         * @hide
+         */
+        public static final String NAV_BAR_TABUI_MENU = "nav_bar_tabui_menu";
+
+
+        /**
          * Navigation controls to Use
          *
          * @hide
