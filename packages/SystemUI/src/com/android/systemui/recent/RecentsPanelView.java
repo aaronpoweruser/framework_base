@@ -538,6 +538,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                             }
 
                             try{
+                                // While more apps open, less delay. We add +1 on the logarithm
+                                // to  avoid exceptions, as log(1) is a math error.
+                                int delay = Math.round(200f  / (float) Math.log(1 + mViewContainer.size()));
                                 for (final View child : mViewContainer){
                                     mTaskHandler.post(new Runnable() {
                                         @Override
@@ -547,7 +550,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                                     });
 
                                     // Add a small delay before of removing next app
-                                    Thread.sleep(150);
+                                    Thread.sleep(delay);
                                 }
                             } catch (ConcurrentModificationException e){
                                 // User pressed back key before animation finished. This is not
