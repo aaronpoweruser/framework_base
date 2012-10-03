@@ -1656,6 +1656,21 @@ public final class Settings {
         public static final String MODE_RINGER = "mode_ringer";
 
         /**
+<<<<<<< HEAD
+=======
+         * User interface mode. This is used to change the UI mode forcing it to
+         * Change into tablet mode. Default is disabled. 
+         */
+        public static final String MODE_TABLET_UI = "mode_tabletui";
+
+        /**
+         * If checked hide extra system bar stuff
+         * ie compatmode button and extra ime switcher.
+         */
+        public static final String HIDE_EXTRAS_SYSTEM_BAR = "hide_extras_system_bar";
+
+        /**
+>>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
          * Determines which streams are affected by ringer mode changes. The
          * stream type's bit should be set to 1 if it should be muted when going
          * into an inaudible ringer mode.
@@ -1667,7 +1682,7 @@ public final class Settings {
           * stream type's bit should be set to 1 if it should be muted when a mute request
           * is received.
           */
-         public static final String MUTE_STREAMS_AFFECTED = "mute_streams_affected";
+        public static final String MUTE_STREAMS_AFFECTED = "mute_streams_affected";
 
         /**
          * Whether vibrate is on for different events. This is used internally,
