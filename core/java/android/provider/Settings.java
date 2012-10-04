@@ -1984,6 +1984,13 @@ public final class Settings {
         public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
 
         /**
+         * Control whether the lockscreen pattern background is see through
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
+
+        /**
          * Control the type of rotation which can be performed using the accelerometer
          * if ACCELEROMETER_ROTATION is enabled.
          * Value is a bitwise combination of
