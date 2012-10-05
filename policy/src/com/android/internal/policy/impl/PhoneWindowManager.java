@@ -1532,9 +1532,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (updateRotation) {
             updateRotation(true);
         }
-       /* boolean showNavBarNow = Settings.System.getBoolean(resolver,
+        boolean showNavBarNow = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
-      int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
+        int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
         int sysUIDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
         
         float navigationBarHeight = ((float)Settings.System.getInt(	
@@ -1565,9 +1565,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                     DisplayMetrics.DENSITY_DEVICE / sysDpi) /
                                     DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
-        NavHeight = Math.round(navigationBarHeight);
-        NavHeightLand = Math.round(navigationBarHeightLandscape);
-        NavWidth = Math.round(navigationBarWidth);
+        int NavHeight = Math.round(navigationBarHeight);
+        int NavHeightLand = Math.round(navigationBarHeightLandscape);
+        int NavWidth = Math.round(navigationBarWidth);
         if (NavHeight != mUserNavBarHeight || NavHeightLand != mUserNavBarHeightLand || NavWidth != mUserNavBarWidth) {
             mUserNavBarHeight = NavHeight;
             mUserNavBarHeightLand = NavHeightLand;
@@ -1575,15 +1575,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if(mDisplay != null)
                 setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
         }
-     /*   // if it breaks comment out here 
-b
-        mHasNavigationBar = Settings.System.getBoolean(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_SHOW, 1) &&	
-                        Settings.System.getBoolean(mContext.getContentResolver(),	
-                               Settings.System.NAVIGATION_BAR_SHOW_NOW, mHasNavigationBar); 
-            mHasNavigationBar !=
+        // if it breaks comment out here 
+
+        mHasNavigationBar = false; 
+            //mHasNavigationBar !=
         if (mHasNavigationBar!= showNavBarNow) {
-            mHasNavigationBar = showNavBarNow;
+            mHasNavigationBar = !showNavBarNow;
             if(mDisplay != null)
                 setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
         } // to here */
