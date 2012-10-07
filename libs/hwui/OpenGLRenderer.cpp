@@ -656,6 +656,10 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, sp<Snapshot> sna
     TILERENDERING_END(previousFbo, layer->getFbo());
 #endif
     glBindFramebuffer(GL_FRAMEBUFFER, layer->getFbo());
+#ifdef QCOM_HARDWARE
+    TILERENDERING_START(layer->getFbo(), clip.left, clip.top,
+                        clip.right, clip.bottom, mWidth, mHeight);
+#endif
     layer->bindTexture();
 
     // Initialize the texture if needed
@@ -671,8 +675,11 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, sp<Snapshot> sna
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         ALOGE("Framebuffer incomplete (GL error code 0x%x)", status);
-        glBindFramebuffer(GL_FRAMEBUFFER, previousFbo);
 #ifdef QCOM_HARDWARE
+        TILERENDERING_END(layer->getFbo(), true);
+#endif
+        glBindFramebuffer(GL_FRAMEBUFFER, previousFbo);
+#ifdef QCOM_HARDWAREf
         TILERENDERING_START(previousFbo, layer->getFbo(), true);
 #endif
         layer->deleteTexture();
