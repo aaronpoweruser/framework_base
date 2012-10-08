@@ -1656,8 +1656,6 @@ public final class Settings {
         public static final String MODE_RINGER = "mode_ringer";
 
         /**
-<<<<<<< HEAD
-=======
          * User interface mode. This is used to change the UI mode forcing it to
          * Change into tablet mode. Default is disabled. 
          */
@@ -1670,7 +1668,6 @@ public final class Settings {
         public static final String HIDE_EXTRAS_SYSTEM_BAR = "hide_extras_system_bar";
 
         /**
->>>>>>> e766713... SystemUI: CustomNav bar for Tablets / TabletUI
          * Determines which streams are affected by ringer mode changes. The
          * stream type's bit should be set to 1 if it should be muted when going
          * into an inaudible ringer mode.
@@ -2603,11 +2600,13 @@ public final class Settings {
          */
         public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
 
-        /**
-         * Statusbar State
+         /**
+         * Expanded desktop
+         * 0: Disabled
+         * 1: Enabled
          * @hide
          */
-        public static final String STATUSBAR_STATE = "statusbar_state";
+        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
 
         /**
@@ -2841,19 +2840,23 @@ public final class Settings {
          * Whether System profiles are enabled
          * @hide
          */
+
         public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
      
-        /**
-         * Whether power menu expanded desktop is enabled
-         * @hide
-         */
-        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
+        public static final String POWER_MENU_REBOOT_ENABLED = "power_menu_reboot_enabled";
+
 
         /**
          * Whether power menu screenshot is enabled
          * @hide
          */
         public static final String POWER_MENU_SCREENSHOT_ENABLED = "power_menu_screenshot_enabled";
+
+        /**
+         * Whether power menu expanded desktop is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
 
         /**
          * Whether power menu airplane mode is enabled
