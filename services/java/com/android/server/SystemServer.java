@@ -287,6 +287,9 @@ class ServerThread extends Thread {
             Slog.e("System", "************ Failure starting core service", e);
         }
 
+        boolean hasRotationLock = context.getResources().getBoolean(com.android
+                .internal.R.bool.config_hasRotationLockSwitch);
+
         DevicePolicyManagerService devicePolicy = null;
         StatusBarManagerService statusBar = null;
         InputMethodManagerService imm = null;
@@ -491,6 +494,7 @@ class ServerThread extends Thread {
                 ServiceManager.addService(Context.PROFILE_SERVICE, profile);
             } catch (Throwable e) {
                 Slog.e(TAG, "Failure starting Profile Manager", e);
+            }
 
             try {
                 if (accountManager != null)
