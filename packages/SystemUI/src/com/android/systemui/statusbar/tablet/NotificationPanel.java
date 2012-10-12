@@ -217,6 +217,13 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     }
     */
 
+     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updatePanelModeButtons();
+    }
+
+
     public void onClick(View v) {
         if (mSettingsButton.isEnabled() && v == mTitleArea) {
             swapPanels();
