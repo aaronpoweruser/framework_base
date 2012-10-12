@@ -52,11 +52,8 @@ import com.android.internal.telephony.cdma.sms.BearerData;
 import com.android.internal.telephony.cdma.sms.CdmaSmsAddress;
 import com.android.internal.telephony.cdma.sms.SmsEnvelope;
 import com.android.internal.telephony.cdma.sms.UserData;
-<<<<<<< HEAD
 import com.android.internal.util.BitwiseInputStream;
 import com.android.internal.util.HexDump;
-=======
->>>>>>> aosp/jb-mr0-release
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

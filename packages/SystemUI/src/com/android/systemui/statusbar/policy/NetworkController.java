@@ -947,13 +947,10 @@ public class NetworkController extends BroadcastReceiver {
         String wifiLabel = "";
         String mobileLabel = "";
         int N;
-<<<<<<< HEAD
         final boolean emergencyOnly = (mServiceState != null && mServiceState.isEmergencyOnly());
         final String customLabel = Settings.System.getString(mContext.getContentResolver(),
             Settings.System.CUSTOM_CARRIER_LABEL);
-=======
-        final boolean emergencyOnly = isEmergencyOnly();
->>>>>>> aosp/jb-mr0-release
+
 
         if (!mHasMobileDataFeature) {
             mDataSignalIconId = mPhoneSignalIconId = 0;

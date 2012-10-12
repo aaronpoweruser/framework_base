@@ -2508,20 +2508,11 @@ public final class GsmDataConnectionTracker extends DataConnectionTracker {
 
             // Add all the rest of the apns that can handle the requested type
             for (ApnSetting apn : mAllApns) {
-<<<<<<< HEAD
-                if ((apn.canHandleType(requestedApnType)) &&
-                    (apn.bearer == 0 || apn.bearer == radioTech) &&
-                    !apnList.contains(apn))
-                {
-                    if (DBG) log("apn info : " +apn.toString());
-                    apnList.add(apn);
-=======
                 if (apn.canHandleType(requestedApnType)) {
                     if (apn.bearer == 0 || apn.bearer == radioTech) {
                         if (DBG) log("apn info : " +apn.toString());
                         apnList.add(apn);
                     }
->>>>>>> aosp/jb-mr0-release
                 }
             }
         } else {
