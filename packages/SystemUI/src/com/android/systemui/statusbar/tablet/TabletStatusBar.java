@@ -853,7 +853,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                             if (mNotificationDNDMode) {
                                 copy.content.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-                                        SSettings.System.putInt(mContext.getContentResolver(),
+                                        Settings.System.putInt(mContext.getContentResolver(),
                                             Settings.System.STATUS_BAR_DONOTDISTURB, 1);
                                         animateCollapse();
                                         visibilityChanged(false);

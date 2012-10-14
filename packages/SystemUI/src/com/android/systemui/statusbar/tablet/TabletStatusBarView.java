@@ -19,18 +19,27 @@ package com.android.systemui.statusbar.tablet;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
-
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Slog;
 import android.view.View;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+
+import java.math.BigInteger;
 
 public class TabletStatusBarView extends FrameLayout {
     private Handler mHandler;
@@ -48,15 +57,13 @@ public class TabletStatusBarView extends FrameLayout {
     public TabletStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegateHelper = new DelegateViewHelper(this);
-        
+
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVBAR_COLOR), false,
-                new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateColor();
-                    }
-                });
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(false);
+                }});
     }
 
     public void setDelegateView(View view) {
@@ -76,6 +83,11 @@ public class TabletStatusBarView extends FrameLayout {
     }
 
     @Override
+    public void onFinishInflate() {
+        updateColor(true);
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         // Find the view we wish to grab events from in order to detect search gesture.
@@ -87,7 +99,6 @@ public class TabletStatusBarView extends FrameLayout {
         }
         mDelegateHelper.setSourceView(view);
         mDelegateHelper.setInitialTouchRegion(view);
-        updateColor();
     }
 
     @Override
@@ -158,22 +169,29 @@ public class TabletStatusBarView extends FrameLayout {
         mPanels[index] = panel;
     }
 
-     private void updateColor(boolean primary) {
-        Drawable oldColor = getBackground();
-        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        Canvas cnv = new Canvas(bm);
-
-        if (primary) {
-            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR, 0xFF000000));
-        } else {
-            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000));
+    private void updateColor(boolean defaults) {
+        if (defaults) {
+            Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            Canvas cnv = new Canvas(bm);
+            cnv.drawColor(0xFF000000);
+            setBackground(new BitmapDrawable(bm));
+            return;
         }
 
-        Drawable newColor = new BitmapDrawable(bm);
+        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+            Settings.System.NAV_BAR_COLOR);
+        String[] mColors = (mSetting == null || mSetting.equals("") ?
+            ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+            ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : mSetting).split(
+            ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String mCurColor = mColors[Integer.parseInt(mColors[2])];
+        
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(new BigInteger(mCurColor, 16).intValue());
 
-        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+            getBackground(), new BitmapDrawable(bm)});
         transition.setCrossFadeEnabled(true);
         setBackground(transition);
         transition.startTransition(1000);

@@ -55,6 +55,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 
+
 /**
  * The Settings provider contains global system-level device preferences.
  */
@@ -2557,12 +2558,45 @@ public final class Settings {
          */
         public static final String STATUS_BAR_AM_PM = "status_bar_am_pm";
 
-        /**
-         * Statusbar transparency value
-         * from 0% to 100%
+                 /**
+         * Ability to change navigation bar color
+         * Format: AARRGGBB|AARRGGBB|index
+         * First color is the primary, systemwide color
+         * Second is the color of the current foreground-app
+         * Last (third) entry determines which has changed last, 0 or 1
          * @hide
          */
-        public static final String STATUS_BAR_TRANSPARENCY = "status_bar_transparency";
+        public static final String NAV_BAR_COLOR = "nav_bar_color";
+
+        /**
+         * Ability to change navigation button color
+         * Format: AARRGGBB|AARRGGBB|index
+         * First color is the primary, systemwide color
+         * Second is the color of the current foreground-app
+         * Last (third) entry determines which has changed last, 0 or 1
+         * @hide
+         */
+        public static final String NAV_BUTTON_COLOR = "nav_button_color";
+
+        /**
+         * Ability to change navigation glow color
+         * Format: AARRGGBB|AARRGGBB|index
+         * First color is the primary, systemwide color
+         * Second is the color of the current foreground-app
+         * Last (third) entry determines which has changed last, 0 or 1
+         * @hide
+         */
+        public static final String NAV_GLOW_COLOR = "nav_glow_color";
+
+         /**
+         * Statusbar color. May include alpha
+         * Format: AARRGGBB|AARRGGBB|index
+         * First color is the primary, systemwide color
+         * Second is the color of the current foreground-app
+         * Last (third) entry determines which has changed last, 0 or 1
+         * @hide
+         */
+        public static final String STATUS_BAR_COLOR = "status_bar_color";
 
         /**
          * Display style of the status bar battery information
@@ -3048,6 +3082,19 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
             LOCKSCREEN_VIBRATE_ENABLED,
         };
 
+        /**
+         * Insecure settings can be set on any context, without any
+         * importance of permission level
+         *
+         * @hide
+         */
+        public static final String[] INSECURE_SETTINGS = {
+            NAV_BAR_COLOR,
+            NAV_BUTTON_COLOR,
+            NAV_GLOW_COLOR,
+            STATUS_BAR_COLOR
+        };
+
         // Settings moved to Settings.Secure
 
         /**
@@ -3348,6 +3395,8 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
          * @hide
          */
         public static final String STATUSBAR_TOGGLES_BACKGROUND = "statusbar_toggles_background";
+
+
 
         /**
          * Navigation bar height in landscape if the bar is along the side of the device
@@ -3751,6 +3800,8 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
          */
         public static final String STATUSBAR_SIGNAL_TEXT_COLOR = "statusbar_signal_text_color";
 
+        
+
         /**
          * whether to hide the signal barss
          *
@@ -3789,6 +3840,8 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
          * @hide
          */
         public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
+
+        
 
     }
 
@@ -5904,6 +5957,7 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
             LOCK_SCREEN_OWNER_INFO,
             LOCK_SCREEN_OWNER_INFO_ENABLED
         };
+
 
         /**
          * Helper method for determining if a location provider is enabled.

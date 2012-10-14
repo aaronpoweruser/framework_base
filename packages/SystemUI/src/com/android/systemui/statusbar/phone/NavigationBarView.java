@@ -1141,6 +1141,21 @@ public class NavigationBarView extends LinearLayout {
         });
     }
 
+    private void updateColor() {
+        Drawable oldColor = getBackground();
+
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
+        Drawable newColor = new BitmapDrawable(bm);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        transition.setCrossFadeEnabled(true);
+        setBackground(transition);
+        transition.startTransition(1000);
+    }
+
     public OnPageChangeListener mNewPageListener = new OnPageChangeListener() {
 
         @Override
@@ -1206,18 +1221,6 @@ public class NavigationBarView extends LinearLayout {
                     
             }
         }
-    private void updateColor() {
-        Drawable oldColor = getBackground();
-
-        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        Canvas cnv = new Canvas(bm);
-        cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
-        Drawable newColor = new BitmapDrawable(bm);
-
-        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
-        transition.setCrossFadeEnabled(true);
-        setBackground(transition);
-        transition.startTransition(1000);
-    }
+}
+  
 }

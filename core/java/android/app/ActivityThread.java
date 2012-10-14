@@ -75,9 +75,10 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.os.Trace;
 import android.os.UserId;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.AndroidRuntimeException;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -2109,7 +2110,6 @@ public final class ActivityThread {
 
         try {
             Application app = r.packageInfo.makeApplication(false, mInstrumentation);
-
             if (localLOGV) Slog.v(TAG, "Performing launch of " + r);
             if (localLOGV) Slog.v(
                     TAG, r + ": app=" + app
@@ -2693,6 +2693,44 @@ public final class ActivityThread {
                     deliverResults(r, r.pendingResults);
                     r.pendingResults = null;
                 }
+
+                // Per-App-Extras
+                if (ExtendedPropertiesUtils.isInitialized()) {
+                    try {
+                        for (int i = 0; i < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; i++) {
+                            // Fetch defaults
+                            String mSetting = Settings.System.getString(r.activity.getContentResolver(),
+                                ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i]);
+
+                            String[] mColors = (mSetting == null || mSetting.equals("") ?
+                                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i] : mSetting).split(
+                                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+
+                            // Sanity check
+                            if (mColors.length != 3) {
+                                mColors = ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i].split(
+                                    ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                    ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i], 
+                                    ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i]);
+                            }
+
+                            // Change color
+                            String mCurColor = mColors[Integer.parseInt(mColors[2])];
+                            String mAppColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
+                            String mNexColor = mAppColor.equals("") ? mColors[0] : mAppColor;
+
+                            if (mNexColor != mCurColor) {
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                    ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i], 
+                                    mColors[0] + "|" + mNexColor + "|1");
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Current application is null, or hook is not set
+                    }
+                }
+
                 r.activity.performResume();
 
                 EventLog.writeEvent(LOG_ON_RESUME_CALLED,

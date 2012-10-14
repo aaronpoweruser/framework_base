@@ -136,10 +136,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
         final Context context = getContext();
 
-        mBrightness = new BrightnessController(context,
-                (ToggleSlider)findViewById(R.id.brightness));
-        mDoNotDisturb = new DoNotDisturbController(context,
-                (CompoundButton)findViewById(R.id.do_not_disturb_checkbox));
 
         if(mToggleContainer == null)
            mToggleContainer = BUTTONS_DEFAULT;
