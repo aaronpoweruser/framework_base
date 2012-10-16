@@ -1577,10 +1577,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         // if it breaks comment out here 
 
-        mHasNavigationBar = false; 
+        mHasNavigationBar = true; 
             //mHasNavigationBar !=
-        if (mHasNavigationBar!= showNavBarNow) {
-            mHasNavigationBar = !showNavBarNow;
+        if (mHasNavigationBar != showNavBarNow) {
+            mHasNavigationBar = showNavBarNow;
             if(mDisplay != null)
                 setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
         } // to here */
