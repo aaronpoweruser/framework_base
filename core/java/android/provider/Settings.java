@@ -2853,6 +2853,9 @@ public final class Settings {
          * Whether power menu expanded desktop is enabled
          * @hide
          */
+
+public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggles_show_brightness";
+
         public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
 
         /**
