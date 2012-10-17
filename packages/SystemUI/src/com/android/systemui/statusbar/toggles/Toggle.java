@@ -47,15 +47,10 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected ImageView mIcon;
     protected TextView mText;
     protected CompoundButton mToggle;
-    protected ImageView mBackground;
 
     protected boolean mSystemChange = false;
     final boolean useAltButtonLayout;
-    protected int enabledColor;
-    protected int disabledColor;
-    protected int textColor;
-    protected float toggleAlpha;
-    protected float toggleBgAlpha;
+    final int defaultColor;
 
     public Toggle(Context context) {
         mContext = context;
@@ -64,35 +59,12 @@ public abstract class Toggle implements OnCheckedChangeListener {
                 context.getContentResolver(),
                 Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
 
-        textColor = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_TEXT_COLOR, 0xFF33B5E5);
-
-        int enabledColorValue = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_ENABLED_COLOR, 0xFF33B5E5);
-
-        int disabledColorValue = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_DISABLED_COLOR, 0xFF4C4C4C);
-
-        toggleAlpha = Settings.System.getFloat(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_ALPHA, 0.7f);
-
-        toggleBgAlpha = Settings.System.getFloat(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_BACKGROUND, 0.0f);
-
-        float[] enabledHsv = new float[3];
-        float[] disabledHsv = new float[3];
-        Color.colorToHSV(enabledColorValue, enabledHsv);
-        Color.colorToHSV(disabledColorValue, disabledHsv);
-        enabledHsv[2] *= 1.0f;
-        disabledHsv[2] *= 1.0f;
-        enabledColor = Color.HSVToColor(enabledHsv);
-        disabledColor = Color.HSVToColor(disabledHsv);
-
+        float[] hsv = new float[3];
+        int color = context.getResources().getColor(
+                com.android.internal.R.color.holo_blue_light);
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= 0.7f; // value component
+        defaultColor = Color.HSVToColor(hsv);
 
         mView = View.inflate(mContext,
                 useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
@@ -101,7 +73,6 @@ public abstract class Toggle implements OnCheckedChangeListener {
         mIcon = (ImageView) mView.findViewById(R.id.icon);
         mToggle = (CompoundButton) mView.findViewById(R.id.toggle);
         mText = (TextView) mView.findViewById(R.id.label);
-        mBackground = (ImageView) mView.findViewById(R.id.toggle_background);
 
         mToggle.setOnCheckedChangeListener(this);
         mToggle.setOnLongClickListener(new OnLongClickListener() {
@@ -110,34 +81,32 @@ public abstract class Toggle implements OnCheckedChangeListener {
                 if (onLongPress()) {
                     collapseStatusBar();
                     return true;
-                } else
+                } else {
                     return false;
+                }
             }
         });
     }
 
     public void updateDrawable(boolean toggle) {
-        Drawable toggleBg = mContext.getResources().getDrawable(R.drawable.toggle_background);
-        toggleBg.setAlpha((int) (toggleBgAlpha * 255));
-        mBackground.setBackgroundDrawable(toggleBg);
-        mText.setTextColor(textColor);
-        if (!useAltButtonLayout)
+        if (!useAltButtonLayout){
             return;
+        }
 
         Drawable bg = mContext.getResources().getDrawable(
                 toggle ? R.drawable.btn_on : R.drawable.btn_off);
-        if (toggle)
-            bg.setColorFilter(enabledColor, PorterDuff.Mode.SRC_ATOP);
-        else
-            bg.setColorFilter(disabledColor, PorterDuff.Mode.SRC_ATOP);
-        bg.setAlpha((int) (toggleAlpha * 255));
+        if (toggle) {
+            bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
+        } else {
+            bg.setColorFilter(null);
+        }
         mToggle.setBackgroundDrawable(bg);
     }
 
     /**
      * this method is called when we need to update the state of the toggle due
      * to outside interactions.
-     * 
+     *
      * @return returns the on/off state of the toggle
      */
     protected abstract boolean updateInternalToggleState();

@@ -42,11 +42,9 @@ public class TwoGToggle extends Toggle {
     }
 
     @Override
-    protected void onCheckChanged(boolean isChecked) {
-        TelephonyManager tm = (TelephonyManager) mView.getContext()
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        tm.toggle2G(isChecked);
-        updateState();
+    public void onCheckChanged(boolean checked) {
+        int networkType = checked ? Phone.NT_MODE_WCDMA_PREF : Phone.NT_MODE_GSM_ONLY;
+        Settings.Secure.putInt(mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, networkType);
     }
 
     class SettingsObserver extends ContentObserver {
@@ -83,12 +81,15 @@ public class TwoGToggle extends Toggle {
     @Override
     protected boolean updateInternalToggleState() {
         mNetworkMode = getCurrentPreferredNetworkMode(mContext);
-        if (mToggle != null)
+        if (mToggle != null){
             mToggle.setChecked(mNetworkMode == Phone.NT_MODE_GSM_ONLY);
-        if (mToggle.isChecked())
+        }
+        if (mToggle.isChecked()){
             setIcon(R.drawable.toggle_2g_1);
-        else
+        }
+        else{
             setIcon(R.drawable.toggle_2g_1_off);
+        }
         return mToggle.isChecked();
     }
 

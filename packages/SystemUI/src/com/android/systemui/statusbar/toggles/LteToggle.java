@@ -89,15 +89,7 @@ public class LteToggle extends Toggle {
     protected boolean updateInternalToggleState() {
         mNetworkMode = getCurrentPreferredNetworkMode(mContext);
         if (mToggle != null)
-            switch(mNetworkMode) {
-                case Phone.NT_MODE_LTE_CDMA_EVDO:
-                case Phone.NT_MODE_GLOBAL:
-                    mToggle.setChecked(true);
-                    break;
-                default:
-                    mToggle.setChecked(false);
-                    break;
-            }
+            mToggle.setChecked(mNetworkMode == Phone.NT_MODE_GLOBAL);
         if (mToggle.isChecked()) {
             setIcon(R.drawable.toggle_lte);
         } else {
@@ -115,4 +107,3 @@ public class LteToggle extends Toggle {
         return true;
     }
 }
-
