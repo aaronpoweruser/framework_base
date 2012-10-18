@@ -39,6 +39,10 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -67,6 +71,10 @@ import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -1173,6 +1181,7 @@ public class NavigationBarView extends LinearLayout {
         public static final String ACTION_TOGGLE_WIDGETS = "com.android.systemui.ACTION_TOGGLE_WIDGETS";
         public static final String ACTION_DELETE_WIDGETS = "com.android.systemui.ACTION_DELETE_WIDGETS";
 
+
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1206,5 +1215,17 @@ public class NavigationBarView extends LinearLayout {
                     
             }
         }
+    private void updateColor() {
+        Drawable oldColor = getBackground();
+
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
+        Drawable newColor = new BitmapDrawable(bm);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        setBackground(transition);
+        transition.startTransition(500);
     }
 }
