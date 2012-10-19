@@ -1217,6 +1217,6 @@ public class NavigationBarView extends LinearLayout {
 
         TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
         setBackground(transition);
-        transition.startTransition(500);
+        transition.startTransition(1000);
     }
 }
