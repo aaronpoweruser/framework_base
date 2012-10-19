@@ -1043,6 +1043,8 @@
     <string name="date_picker_dialog_title" msgid="5879450659453782278">"Establecer fecha"</string>
     <string name="date_time_set" msgid="5777075614321087758">"Establecer"</string>
     <string name="date_time_done" msgid="2507683751759308828">"Listo"</string>
+    <string name="color_picker">Selector de color</string>
+    <string name="color_picker_hint">Presione en el color para aplicar</string>
     <string name="default_permission_group" msgid="2690160991405646128">"Predeterminado"</string>
     <string name="no_permissions" msgid="7283357728219338112">"No es necesario ningún permiso"</string>
     <string name="perms_hide" msgid="7283915391320676226"><b>"Ocultar"</b></string>
