@@ -2853,6 +2853,9 @@ public final class Settings {
          * Whether power menu expanded desktop is enabled
          * @hide
          */
+
+public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggles_show_brightness";
+
         public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
 
         /**
@@ -3657,6 +3660,18 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_TOGGLES_USE_BUTTONS = "statusbar_toggles_use_buttons";
+
+         /**
+         * Disable scrolling on non-switched toggle layouts
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_DISABLE_SCROLL = "statusbar_toggles_disable_scroll";
+
+        /**
+         * Enable toggles on statusbar
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_ENABLE = "statusbar_toggles_enable";
 
         /**
          * @hide

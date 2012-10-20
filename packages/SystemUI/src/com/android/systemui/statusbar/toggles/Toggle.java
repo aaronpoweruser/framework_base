@@ -22,7 +22,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.CompoundButton;
@@ -40,6 +42,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
 
     protected static final String TAG = "Toggle";
 
+    private static final int VIBRATE_DURATION = 10; // 10 ms, not intrusive time
+
     View mView;
     protected Context mContext;
 
@@ -47,61 +51,47 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected ImageView mIcon;
     protected TextView mText;
     protected CompoundButton mToggle;
-    protected ImageView mBackground;
+
+    protected Vibrator mVibrator;
 
     protected boolean mSystemChange = false;
-    final boolean useAltButtonLayout;
-    protected int enabledColor;
-    protected int disabledColor;
-    protected int textColor;
-    protected float toggleAlpha;
-    protected float toggleBgAlpha;
+    final int mLayout;
+    final int defaultColor;
+    final int defaultOffColor;
 
     public Toggle(Context context) {
         mContext = context;
 
-        useAltButtonLayout = Settings.System.getInt(
+        mLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, TogglesView.LAYOUT_TOGGLE);
 
-        textColor = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_TEXT_COLOR, 0xFF33B5E5);
+        defaultColor = context.getResources().getColor(
+            com.android.internal.R.color.holo_blue_light);
 
-        int enabledColorValue = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_ENABLED_COLOR, 0xFF33B5E5);
+        float[] hsv = new float[3];
+        Color.colorToHSV(defaultColor, hsv);
+        hsv[2] *= 0.5f;
+        defaultOffColor = Color.HSVToColor(hsv);
 
-        int disabledColorValue = Settings.System.getInt(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_DISABLED_COLOR, 0xFF4C4C4C);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
-        toggleAlpha = Settings.System.getFloat(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_ALPHA, 0.7f);
-
-        toggleBgAlpha = Settings.System.getFloat(
-                context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_BACKGROUND, 0.0f);
-
-        float[] enabledHsv = new float[3];
-        float[] disabledHsv = new float[3];
-        Color.colorToHSV(enabledColorValue, enabledHsv);
-        Color.colorToHSV(disabledColorValue, disabledHsv);
-        enabledHsv[2] *= 1.0f;
-        disabledHsv[2] *= 1.0f;
-        enabledColor = Color.HSVToColor(enabledHsv);
-        disabledColor = Color.HSVToColor(disabledHsv);
-
-
-        mView = View.inflate(mContext,
-                useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
-                null);
+        switch (mLayout) {
+            case TogglesView.LAYOUT_SWITCH:
+                mView = View.inflate(mContext, R.layout.toggle_switch, null);
+                break;
+            case TogglesView.LAYOUT_TOGGLE:
+            case TogglesView.LAYOUT_BUTTON:
+                mView = View.inflate(mContext, R.layout.toggle_toggle, null);
+                break;
+            case TogglesView.LAYOUT_MULTIROW:
+                mView = View.inflate(mContext, R.layout.toggle_multirow, null);
+                break;
+        }
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
         mToggle = (CompoundButton) mView.findViewById(R.id.toggle);
         mText = (TextView) mView.findViewById(R.id.label);
-        mBackground = (ImageView) mView.findViewById(R.id.toggle_background);
 
         mToggle.setOnCheckedChangeListener(this);
         mToggle.setOnLongClickListener(new OnLongClickListener() {
@@ -110,34 +100,40 @@ public abstract class Toggle implements OnCheckedChangeListener {
                 if (onLongPress()) {
                     collapseStatusBar();
                     return true;
-                } else
+                } else {
                     return false;
+                }
             }
         });
     }
 
     public void updateDrawable(boolean toggle) {
-        Drawable toggleBg = mContext.getResources().getDrawable(R.drawable.toggle_background);
-        toggleBg.setAlpha((int) (toggleBgAlpha * 255));
-        mBackground.setBackgroundDrawable(toggleBg);
-        mText.setTextColor(textColor);
-        if (!useAltButtonLayout)
-            return;
+        Drawable bg = null;
+        switch(mLayout){
+            case TogglesView.LAYOUT_TOGGLE:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_small);
+                break;
+            case TogglesView.LAYOUT_BUTTON:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_fit);
+                break;
+            default:
+                return;
+        }
 
-        Drawable bg = mContext.getResources().getDrawable(
-                toggle ? R.drawable.btn_on : R.drawable.btn_off);
-        if (toggle)
-            bg.setColorFilter(enabledColor, PorterDuff.Mode.SRC_ATOP);
-        else
-            bg.setColorFilter(disabledColor, PorterDuff.Mode.SRC_ATOP);
-        bg.setAlpha((int) (toggleAlpha * 255));
+        if (toggle) {
+            bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
+        } else {
+            bg.setColorFilter(defaultOffColor, PorterDuff.Mode.SRC_ATOP);
+        }
         mToggle.setBackgroundDrawable(bg);
     }
 
     /**
      * this method is called when we need to update the state of the toggle due
      * to outside interactions.
-     * 
+     *
      * @return returns the on/off state of the toggle
      */
     protected abstract boolean updateInternalToggleState();
@@ -172,8 +168,11 @@ public abstract class Toggle implements OnCheckedChangeListener {
     @Override
     public final void onCheckedChanged(CompoundButton buttonView,
             boolean isChecked) {
-        if (mSystemChange)
-            return;
+        if (mSystemChange) return;
+
+        mView.playSoundEffect(SoundEffectConstants.CLICK);
+        mVibrator.vibrate(VIBRATE_DURATION);
+
         onCheckChanged(isChecked);
     }
 

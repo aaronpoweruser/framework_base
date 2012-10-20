@@ -47,6 +47,7 @@ import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.TypedValue;
@@ -920,8 +921,7 @@ public class NavigationBarView extends LinearLayout {
 
         currentVisibility = Settings.System.getInt(resolver,
                 Settings.System.MENU_VISIBILITY, VISIBILITY_SYSTEM);
-        mTablet_UI = Settings.System.getInt(resolver,
-                Settings.System.TABLET_UI,0);
+        mTablet_UI = ExtendedPropertiesUtils.mIsTablet ? 1 : 0; 
         mNumberOfButtons = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 0);
         if (mNumberOfButtons == 0) {

@@ -105,6 +105,13 @@
         <item name="android:textSize">14dp</item>
     </style>
 
+     <style name="TextAppearance.StatusBar.Toggle" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+    </style>
+
     <style name="Battery_Offset">
     	<item name="android:layout_marginRight">4dp</item>
     	<item name="android:paddingBottom">1dp</item>
@@ -144,6 +151,7 @@
     </style>
 
     <style name="brucekey_icon">
+       <item name="android:disabledAlpha">?android:disabledAlpha</item>
        <item name="android:layout_width">wrap_content</item>
        <item name="android:layout_height">wrap_content</item>
     </style>

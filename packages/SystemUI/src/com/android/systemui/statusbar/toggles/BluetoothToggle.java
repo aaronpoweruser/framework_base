@@ -47,7 +47,7 @@ public class BluetoothToggle extends Toggle {
                 updateState();
             }
         }, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-        setLabel(R.string.toggle_bt);
+        setLabel(R.string.toggle_bluetooth);
         updateState();
     }
 
