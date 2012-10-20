@@ -20,21 +20,9 @@ import com.android.systemui.statusbar.BaseStatusBar;
 
 public class TogglesView extends LinearLayout {
 
-    private static final String TAG = "ToggleView";
-
-    private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
-    private ArrayList<Toggle> toggles = new ArrayList<Toggle>();
+    private static final String TAG = "TogglesView";
 
     private static final String TOGGLE_DELIMITER = "|";
-
-    public static final int STYLE_NONE = 1;
-    public static final int STYLE_ICON = 2;
-    public static final int STYLE_TEXT = 3;
-    public static final int STYLE_TEXT_AND_ICON = 4;
-
-    private boolean mShowBrightness;
-
-    private int mToggleStyle = STYLE_TEXT;
 
     private static final String TOGGLE_AUTOROTATE = "ROTATE";
     private static final String TOGGLE_BLUETOOTH = "BLUETOOTH";
@@ -51,15 +39,24 @@ public class TogglesView extends LinearLayout {
     private static final String TOGGLE_SYNC = "SYNC";
     private static final String TOGGLE_TETHER = "TETHER";
     private static final String TOGGLE_NFC = "NFC";
-    private int mWidgetsPerRow = 2;
+    private static final String TOGGLE_DONOTDISTURB = "DONOTDISTURB";
 
-    private boolean useAltButtonLayout = false;
+    private static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
+            + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
+            + TOGGLE_DELIMITER + TOGGLE_SYNC;
 
-    private BaseStatusBar sb;
+    protected static final int STYLE_NONE = 1;
+    protected static final int STYLE_ICON = 2;
+    protected static final int STYLE_TEXT = 3;
+    protected static final int STYLE_ICON_TEXT = 4;
 
-    View mBrightnessSlider;
+    public static final int LAYOUT_SWITCH = 0;
+    public static final int LAYOUT_TOGGLE = 1;
+    public static final int LAYOUT_BUTTON = 2;
+    public static final int LAYOUT_MULTIROW = 3;
 
-    LinearLayout mToggleSpacer;
+    private static final int WIDGETS_PER_ROW_UNLIMITED = 100; // 100 is big enough
+    private static final int WIDGETS_PER_ROW_DEFAULT = 2;
 
     private static final LinearLayout.LayoutParams PARAMS_BRIGHTNESS = new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, 90);
@@ -69,6 +66,23 @@ public class TogglesView extends LinearLayout {
 
     private static final LinearLayout.LayoutParams PARAMS_TOGGLE_SCROLL = new LinearLayout.LayoutParams(
             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
+
+    private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
+    private ArrayList<Toggle> toggles = new ArrayList<Toggle>();
+
+    private int mWidgetsPerRow;
+
+    private boolean mShowBrightness;
+
+    private int mToggleStyle = STYLE_TEXT;
+
+    private boolean mUseChainedLayout;
+
+    private BaseStatusBar sb;
+
+    View mBrightnessSlider;
+
+    LinearLayout mToggleSpacer;
 
     public TogglesView(Context context) {
         this(context, null);
@@ -116,6 +130,8 @@ public class TogglesView extends LinearLayout {
                 newToggle = new USBTetherToggle(mContext);
             } else if (splitToggle.equals(TOGGLE_NFC)) {
                 newToggle = new NFCToggle(mContext);
+            } else if (splitToggle.equals(TOGGLE_DONOTDISTURB)) {
+                newToggle = new DoNotDisturbToggle(mContext);
             }
 
             if (newToggle != null) {
@@ -133,34 +149,32 @@ public class TogglesView extends LinearLayout {
 
     private void addViews() {
         removeViews();
-
-        if (!useAltButtonLayout) {
-            DisplayMetrics metrics = getContext().getResources()
-                    .getDisplayMetrics();
-            float dp = 10f;
-            int pixels = (int) (metrics.density * dp + 0.5f);
-            this.setPadding(getPaddingLeft(), pixels, getPaddingRight(),
-                    getPaddingBottom());
-        }
+        boolean disableScroll = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_DISABLE_SCROLL,
+                0) == 1;
 
         for (int i = 0; i < toggles.size(); i++) {
             if (i % mWidgetsPerRow == 0) {
                 // new row
                 rows.add(new LinearLayout(mContext));
             }
+
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
-                    (useAltButtonLayout ? PARAMS_TOGGLE_SCROLL : PARAMS_TOGGLE));
+                    (!mUseChainedLayout || disableScroll ? PARAMS_TOGGLE : PARAMS_TOGGLE_SCROLL));
+
+            if (mWidgetsPerRow == 1) {
+                addSeparator();
+            }
         }
 
-        if (!useAltButtonLayout && (toggles.size() % 2 != 0)) {
+        if (mWidgetsPerRow != 1 && !mUseChainedLayout && (toggles.size() % 2 != 0)) {
             // We are using switches, and have an uneven number - let's add a
             // spacer
             mToggleSpacer = new LinearLayout(mContext);
             rows.get(rows.size() - 1).addView(mToggleSpacer, PARAMS_TOGGLE);
-
         }
 
-        if (useAltButtonLayout) {
+        if (mUseChainedLayout && disableScroll == false) {
             LinearLayout togglesRowLayout;
             HorizontalScrollView toggleScrollView = new HorizontalScrollView(
                     mContext);
@@ -172,12 +186,13 @@ public class TogglesView extends LinearLayout {
                 rows.add(togglesRowLayout);
             }
 
-            togglesRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            togglesRowLayout.setGravity(Gravity.LEFT);
             toggleScrollView.setHorizontalFadingEdgeEnabled(true);
+            toggleScrollView.setHorizontalScrollBarEnabled(false);
             toggleScrollView.addView(togglesRowLayout, PARAMS_TOGGLE);
             LinearLayout ll = new LinearLayout(mContext);
             ll.setOrientation(LinearLayout.VERTICAL);
-            ll.setGravity(Gravity.CENTER_HORIZONTAL);
+            ll.setGravity(Gravity.LEFT);
             ll.addView(toggleScrollView, PARAMS_TOGGLE_SCROLL);
             rows.remove(rows.size() - 1);
             rows.add(ll);
@@ -187,10 +202,7 @@ public class TogglesView extends LinearLayout {
             addBrightness();
         }
 
-        final int layout_type = Settings.System.getInt(
-                mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_LAYOUT, 0);
-        if (sb != null && !sb.isTablet() && layout_type != 2){
+        if (sb != null && !sb.isTablet()){
             addSeparator();
         }
 
@@ -210,7 +222,7 @@ public class TogglesView extends LinearLayout {
 
     private void addSeparator() {
         View sep = new View(mContext);
-        sep.setBackgroundResource(R.drawable.status_bar_hr);
+        sep.setBackgroundResource(android.R.drawable.divider_horizontal_dark);
 
         DisplayMetrics metrics = getContext().getResources()
                 .getDisplayMetrics();
@@ -234,18 +246,20 @@ public class TogglesView extends LinearLayout {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_TOGGLES_ENABLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_STYLE), false,
                     this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_TOGGLES_NUMBER_PER_ROW),
-                    false, this);
+                    Settings.System.STATUSBAR_TOGGLES_DISABLE_SCROLL), false,
+                    this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS),false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
+                    false, this);
             updateSettings();
         }
 
@@ -265,20 +279,36 @@ public class TogglesView extends LinearLayout {
         String selectedToggles = Settings.System.getString(resolver,
                 Settings.System.STATUSBAR_TOGGLES);
 
-        if(selectedToggles != null) {
-            addToggles(selectedToggles);
-        } else {
+        boolean enableToggles = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_TOGGLES_ENABLE,
+                0) == 1;
+
+        // So you don't like toggles?, bad for you!
+        if(!enableToggles) {
             toggles.clear();
+        } else {
+            addToggles(selectedToggles != null ? selectedToggles :
+                    DEFAULT_TOGGLES);
         }
 
         mToggleStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_TOGGLES_STYLE, STYLE_ICON);
 
-        useAltButtonLayout = Settings.System.getInt(
+        int layout = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, LAYOUT_TOGGLE);
 
-        mWidgetsPerRow = useAltButtonLayout ? 100 : 2;
+        if (layout == LAYOUT_BUTTON && mToggleStyle != STYLE_ICON) {
+            mToggleStyle = STYLE_ICON;
+        }
+        else if (layout == LAYOUT_MULTIROW) {
+            mToggleStyle = STYLE_ICON_TEXT;
+        }
+
+        mUseChainedLayout = (layout == LAYOUT_TOGGLE || layout == LAYOUT_BUTTON);
+
+        mWidgetsPerRow = !mUseChainedLayout ? WIDGETS_PER_ROW_DEFAULT :
+                WIDGETS_PER_ROW_UNLIMITED;
 
         boolean addText = false;
         boolean addIcon = false;
@@ -292,9 +322,10 @@ public class TogglesView extends LinearLayout {
             case STYLE_TEXT:
                 addText = true;
                 break;
-            case STYLE_TEXT_AND_ICON:
-                addText = true;
+            case STYLE_ICON_TEXT:
                 addIcon = true;
+                addText = true;
+                mWidgetsPerRow = 1;
                 break;
         }
 

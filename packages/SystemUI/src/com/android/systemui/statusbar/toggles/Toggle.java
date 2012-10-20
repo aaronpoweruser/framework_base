@@ -22,7 +22,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.CompoundButton;
@@ -40,6 +42,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
 
     protected static final String TAG = "Toggle";
 
+    private static final int VIBRATE_DURATION = 10; // 10 ms, not intrusive time
+
     View mView;
     protected Context mContext;
 
@@ -48,27 +52,42 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected TextView mText;
     protected CompoundButton mToggle;
 
+    protected Vibrator mVibrator;
+
     protected boolean mSystemChange = false;
-    final boolean useAltButtonLayout;
+    final int mLayout;
     final int defaultColor;
+    final int defaultOffColor;
 
     public Toggle(Context context) {
         mContext = context;
 
-        useAltButtonLayout = Settings.System.getInt(
+        mLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, TogglesView.LAYOUT_TOGGLE);
+
+        defaultColor = context.getResources().getColor(
+            com.android.internal.R.color.holo_blue_light);
 
         float[] hsv = new float[3];
-        int color = context.getResources().getColor(
-                com.android.internal.R.color.holo_blue_light);
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= 0.7f; // value component
-        defaultColor = Color.HSVToColor(hsv);
+        Color.colorToHSV(defaultColor, hsv);
+        hsv[2] *= 0.5f;
+        defaultOffColor = Color.HSVToColor(hsv);
 
-        mView = View.inflate(mContext,
-                useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
-                null);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+
+        switch (mLayout) {
+            case TogglesView.LAYOUT_SWITCH:
+                mView = View.inflate(mContext, R.layout.toggle_switch, null);
+                break;
+            case TogglesView.LAYOUT_TOGGLE:
+            case TogglesView.LAYOUT_BUTTON:
+                mView = View.inflate(mContext, R.layout.toggle_toggle, null);
+                break;
+            case TogglesView.LAYOUT_MULTIROW:
+                mView = View.inflate(mContext, R.layout.toggle_multirow, null);
+                break;
+        }
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
         mToggle = (CompoundButton) mView.findViewById(R.id.toggle);
@@ -89,16 +108,24 @@ public abstract class Toggle implements OnCheckedChangeListener {
     }
 
     public void updateDrawable(boolean toggle) {
-        if (!useAltButtonLayout){
-            return;
+        Drawable bg = null;
+        switch(mLayout){
+            case TogglesView.LAYOUT_TOGGLE:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_small);
+                break;
+            case TogglesView.LAYOUT_BUTTON:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_fit);
+                break;
+            default:
+                return;
         }
 
-        Drawable bg = mContext.getResources().getDrawable(
-                toggle ? R.drawable.btn_on : R.drawable.btn_off);
         if (toggle) {
             bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
         } else {
-            bg.setColorFilter(null);
+            bg.setColorFilter(defaultOffColor, PorterDuff.Mode.SRC_ATOP);
         }
         mToggle.setBackgroundDrawable(bg);
     }
@@ -141,8 +168,11 @@ public abstract class Toggle implements OnCheckedChangeListener {
     @Override
     public final void onCheckedChanged(CompoundButton buttonView,
             boolean isChecked) {
-        if (mSystemChange)
-            return;
+        if (mSystemChange) return;
+
+        mView.playSoundEffect(SoundEffectConstants.CLICK);
+        mVibrator.vibrate(VIBRATE_DURATION);
+
         onCheckChanged(isChecked);
     }
 

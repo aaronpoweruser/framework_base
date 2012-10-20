@@ -3661,6 +3661,18 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
          */
         public static final String STATUSBAR_TOGGLES_USE_BUTTONS = "statusbar_toggles_use_buttons";
 
+         /**
+         * Disable scrolling on non-switched toggle layouts
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_DISABLE_SCROLL = "statusbar_toggles_disable_scroll";
+
+        /**
+         * Enable toggles on statusbar
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_ENABLE = "statusbar_toggles_enable";
+
         /**
          * @hide
          */
