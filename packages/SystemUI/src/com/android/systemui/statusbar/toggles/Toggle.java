@@ -64,7 +64,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
 
         mLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, TogglesView.LAYOUT_TOGGLE);
+                Settings.System.STATUSBAR_TOGGLES_LAYOUT, TogglesView.LAYOUT_TOGGLE);
 
         defaultColor = context.getResources().getColor(
             com.android.internal.R.color.holo_blue_light);

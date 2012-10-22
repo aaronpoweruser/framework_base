@@ -256,7 +256,7 @@ public class TogglesView extends LinearLayout {
                     Settings.System.STATUSBAR_TOGGLES_DISABLE_SCROLL), false,
                     this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS),false, this);
+                    Settings.System.STATUSBAR_TOGGLES_LAYOUT),false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
                     false, this);
@@ -296,7 +296,7 @@ public class TogglesView extends LinearLayout {
 
         int layout = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, LAYOUT_TOGGLE);
+                Settings.System.STATUSBAR_TOGGLES_LAYOUT, LAYOUT_TOGGLE);
 
         if (layout == LAYOUT_BUTTON && mToggleStyle != STYLE_ICON) {
             mToggleStyle = STYLE_ICON;

@@ -2425,6 +2425,19 @@ public final class Settings {
         /**
          * Widget Buttons to Use
          *
+         * Allows to switch between the different toggle layouts
+         * 0 = Switch
+         * 1 = Toggle
+         * 2 = Holo
+         * 3 = Multirow
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_LAYOUT = "statusbar_toggles_layout";
+
+        /**
+         * Whether to show brightness on toggles view
+         * 0 = Show brightness slider
+         * 1 = Hide brightness slider
          * @hide
          */
         public static final String WIDGET_BUTTONS = "expanded_widget_buttons";
