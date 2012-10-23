@@ -438,6 +438,7 @@
     <string name="status_bar_settings_toggles">Toggles</string>
     <string name="toggle_navbar">Toggle NavBar</string>
     <string name="toggle_widgets">Toggle Widgets</string>
+    <string name="toggle_donotdisturb">DoNotDisturb</string>
 
     <!-- Label in drop down to identify brightness slider -->
     <string name="brightness_label">Brightness</string>
