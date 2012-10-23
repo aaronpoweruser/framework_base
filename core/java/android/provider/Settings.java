@@ -3699,6 +3699,12 @@ public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggle
         public static final String STATUSBAR_TOGGLES_NUMBER_PER_ROW = "statusbar_toggles_number_per_row";
 
         /**
+         * Statusbar Do not disturb
+         * @hide
+         */
+        public static final String STATUS_BAR_DONOTDISTURB = "statusbar_donotdisturb";
+
+        /**
          * @hide
          */
         public static final String STATUS_BAR_LAYOUT = "statusbar_layout";
