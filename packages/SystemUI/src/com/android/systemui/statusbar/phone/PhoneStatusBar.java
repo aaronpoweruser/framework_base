@@ -58,6 +58,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
+import android.util.ExtendedPropertiesUtils;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.Gravity;
@@ -83,6 +84,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.util.ExtendedPropertiesUtils;
+import android.graphics.drawable.TransitionDrawable;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarNotification;
@@ -112,6 +121,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.math.BigInteger;
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
@@ -314,6 +324,35 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     };
 
+      private void updateColor(boolean defaults) {
+        if (defaults) {
+            Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            Canvas cnv = new Canvas(bm);
+            cnv.drawColor(0xFF000000);
+            mStatusBarView.setBackground(new BitmapDrawable(bm));
+            return;
+        }
+
+        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+            Settings.System.STATUS_BAR_COLOR);
+
+        String[] mColors = (mSetting == null || mSetting.equals("") ?
+            ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+            ExtendedPropertiesUtils.PARANOID_COLORS_STATBAR] : mSetting).split(
+            ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String mCurColor = mColors[Integer.parseInt(mColors[2])];
+
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(new BigInteger(mCurColor, 16).intValue());
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+            mStatusBarView.getBackground(), new BitmapDrawable(bm)});
+        transition.setCrossFadeEnabled(true);
+        mStatusBarView.setBackground(transition);
+        transition.startTransition(1000);
+    }
+
     private final Runnable mStartRevealAnimation = new Runnable() {
         @Override
         public void run() {
@@ -389,6 +428,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
 
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(false);
+                }});
+        updateColor(true);
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
     }
@@ -770,11 +816,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         updateSearchPanel();
     }
 
-    protected void setNavigationBarParams(){
-        int opacity = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_TRANSPARENCY, 100);
-        mNavigationBarView.getBackground().setAlpha(Math.round((opacity * 255) / 100));
-    }
 
     // For small-screen devices (read: phones) that lack hardware navigation buttons
     private void addNavigationBar() {
@@ -2522,8 +2563,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             } catch (IOException e) {
                 // we're screwed here fellas
             } 
-            setStatusBarParams(mStatusBarView);
-            setNavigationBarParams();
         } else {
 
             if (mClearButton instanceof TextView) {
@@ -2689,10 +2728,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_VIEW_WIDGET), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_BAR_TRANSPARENCY), false, this);
             update();
         }
 
@@ -2704,8 +2739,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            setStatusBarParams(mStatusBarView);
-            setNavigationBarParams();
         }
     }
 

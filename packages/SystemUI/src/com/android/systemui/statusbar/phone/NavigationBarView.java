@@ -26,6 +26,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.animation.ObjectAnimator;
 import android.app.StatusBarManager;
+import android.database.ContentObserver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +44,8 @@ import android.graphics.drawable.TransitionDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -79,8 +82,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.FileDescriptor;
+import android.util.Log;
 import java.io.PrintWriter;
 import java.lang.StringBuilder;
+import java.math.BigInteger;
+
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
@@ -284,13 +290,14 @@ public class NavigationBarView extends LinearLayout {
                 new ContentObserver(new Handler()) {
                     @Override
                     public void onChange(boolean selfChange) {
-                        updateColor();
+                        updateColor(false);
                     }
                 });
 
         mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         originalHeight = getHeight();
+        
         IntentFilter filter = new IntentFilter();
         filter.addAction(WidgetReceiver.ACTION_ALLOCATE_ID);
         filter.addAction(WidgetReceiver.ACTION_DEALLOCATE_ID);
@@ -797,7 +804,7 @@ public class NavigationBarView extends LinearLayout {
              group.setMotionEventSplittingEnabled(false);
          }
          mCurrentView = mRotatedViews[Surface.ROTATION_0];
-         updateColor();
+         updateColor(true);
 
          // this takes care of making the buttons
          SettingsObserver settingsObserver = new SettingsObserver(new Handler());
@@ -1141,16 +1148,29 @@ public class NavigationBarView extends LinearLayout {
         });
     }
 
-    private void updateColor() {
-        Drawable oldColor = getBackground();
+    private void updateColor(boolean defaults) {
+        if (defaults) {
+            Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            Canvas cnv = new Canvas(bm);
+            cnv.drawColor(0xFF000000);
+            setBackground(new BitmapDrawable(bm));
+            return;
+        }
 
+        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+            Settings.System.NAV_BAR_COLOR);
+        String[] mColors = (mSetting == null || mSetting.equals("") ?
+            ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+            ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : mSetting).split(
+            ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String mCurColor = mColors[Integer.parseInt(mColors[2])];
+        
         Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
         Canvas cnv = new Canvas(bm);
-        cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
-        Drawable newColor = new BitmapDrawable(bm);
+        cnv.drawColor(new BigInteger(mCurColor, 16).intValue());
 
-        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+            getBackground(), new BitmapDrawable(bm)});
         transition.setCrossFadeEnabled(true);
         setBackground(transition);
         transition.startTransition(1000);

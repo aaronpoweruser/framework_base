@@ -270,15 +270,12 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
              resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            setStatusBarParams(mStatusBarView);
             loadDimens();
             updateSettings();
             recreateStatusBar();
@@ -486,7 +483,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
             recreateStatusBar();
 
-            setStatusBarParams(mStatusBarView);
+    
 
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -554,7 +551,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
 
-        setStatusBarParams(mStatusBarView);
+
 
         sb.setHandler(mHandler);
 
