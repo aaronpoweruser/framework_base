@@ -1,6 +1,13 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
+TOOLS_PREFIX := prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.6/bin/arm-linux-androideabi-
+
+ifneq ($(wildcard $(TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)),)
+    LOCAL_CC := $(TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
+    LOCAL_CXX := $(TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
+endif
+
 LOCAL_CFLAGS += -DHAVE_CONFIG_H -DKHTML_NO_EXCEPTIONS -DGKWQ_NO_JAVA
 LOCAL_CFLAGS += -DNO_SUPPORT_JS_BINDING -DQT_NO_WHEELEVENT -DKHTML_NO_XBL
 LOCAL_CFLAGS += -U__APPLE__
@@ -263,3 +270,5 @@ LOCAL_MODULE:= libandroid_runtime
 include $(BUILD_SHARED_LIBRARY)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
+
+
