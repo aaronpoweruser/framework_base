@@ -158,12 +158,24 @@ public class TabletStatusBarView extends FrameLayout {
         mPanels[index] = panel;
     }
 
-    private void updateColor() {
-        int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEMUI_NAVBAR_COLOR,
-                Settings.System.SYSTEMUI_NAVBAR_COLOR_DEF);
-        float alpha = Color.alpha(color);
-        this.setBackground(new ColorDrawable(color));
-        this.setAlpha(alpha);
+     private void updateColor(boolean primary) {
+        Drawable oldColor = getBackground();
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+
+        if (primary) {
+            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR, 0xFF000000));
+        } else {
+            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000));
+        }
+
+        Drawable newColor = new BitmapDrawable(bm);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        transition.setCrossFadeEnabled(true);
+        setBackground(transition);
+        transition.startTransition(1000);
     }
 }
