@@ -1038,15 +1038,6 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
-    private void updateColor() {
-        int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEMUI_NAVBAR_COLOR,
-                Settings.System.SYSTEMUI_NAVBAR_COLOR_DEF);
-        float alpha = Color.alpha(color);
-        this.setBackground(new ColorDrawable(color));
-        this.setAlpha(alpha);
-    }
-
     public void toggleWidgetView() {
         if (showing) {
             if (mPopupView != null) {
